@@ -31,11 +31,10 @@ import jdk.graal.compiler.nodes.StructuredGraph;
 import jdk.graal.compiler.nodes.graphbuilderconf.GraphBuilderConfiguration;
 import jdk.graal.compiler.nodes.graphbuilderconf.IntrinsicContext;
 import jdk.graal.compiler.nodes.spi.CoreProviders;
-import jdk.graal.compiler.phases.Phase;
 import jdk.graal.compiler.phases.BasePhase;
 import jdk.graal.compiler.phases.OptimisticOptimizations;
+import jdk.graal.compiler.phases.Phase;
 import jdk.graal.compiler.phases.tiers.HighTierContext;
-
 import jdk.vm.ci.meta.ResolvedJavaMethod;
 
 /**
@@ -52,6 +51,13 @@ public class GraphBuilderPhase extends BasePhase<HighTierContext> {
     @Override
     public boolean checkContract() {
         return false;
+    }
+
+    /**
+     * Create a new instance of this GraphBuilderPhase with the supplied {@code config}.
+     */
+    public GraphBuilderPhase copyWithConfig(GraphBuilderConfiguration config) {
+        return new GraphBuilderPhase(config);
     }
 
     @Override

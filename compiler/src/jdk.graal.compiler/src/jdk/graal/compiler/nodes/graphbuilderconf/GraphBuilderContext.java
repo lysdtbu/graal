@@ -27,6 +27,7 @@ package jdk.graal.compiler.nodes.graphbuilderconf;
 import static jdk.graal.compiler.core.common.GraalOptions.StrictDeoptInsertionChecks;
 import static jdk.graal.compiler.core.common.type.StampFactory.objectNonNull;
 import static jdk.vm.ci.meta.DeoptimizationAction.InvalidateReprofile;
+import static jdk.vm.ci.services.Services.IS_IN_NATIVE_IMAGE;
 
 import jdk.graal.compiler.bytecode.Bytecode;
 import jdk.graal.compiler.core.common.type.AbstractPointerStamp;
@@ -323,6 +324,12 @@ public interface GraphBuilderContext extends GraphBuilderTool {
      * since it might be checking a range of indexes for an operation on an array body.
      */
     default GuardingNode intrinsicRangeCheck(LogicNode condition, boolean negated) {
+        if (IS_IN_NATIVE_IMAGE) {
+            // Some paths still use the regular BytecodeParser because it's not possible inject the
+            // proper platform dependent parser on all paths so for now guard against this use in
+            // libgraal.
+            throw new InternalError("Should never use this version of intrinsicRangeCheck");
+        }
         assert isParsingInvocationPlugin();
         if (needsExplicitException()) {
             return emitBytecodeExceptionCheck(condition, negated, BytecodeExceptionNode.BytecodeExceptionKind.INTRINSIC_OUT_OF_BOUNDS);
