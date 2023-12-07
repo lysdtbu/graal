@@ -28,6 +28,7 @@ import static com.oracle.svm.core.MissingRegistrationUtils.ERROR_EMPHASIS_INDENT
 
 import java.nio.file.Files;
 import java.nio.file.spi.FileSystemProvider;
+import java.util.Locale;
 import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.Set;
@@ -40,13 +41,22 @@ import jdk.internal.loader.Loader;
 public final class MissingResourceRegistrationUtils {
 
     public static void missingResource(String resourcePath) {
-        MissingResourceRegistrationError exception = new MissingResourceRegistrationError(errorMessage(resourcePath), resourcePath);
+        MissingResourceRegistrationError exception = new MissingResourceRegistrationError(
+                        errorMessage("resource at path", resourcePath),
+                        resourcePath);
         report(exception);
     }
 
-    private static String errorMessage(String resourcePath) {
+    public static void missingResourceBundle(String baseName, Locale locale) {
+        MissingResourceRegistrationError exception = new MissingResourceRegistrationError(
+                        errorMessage("resource bundle with name and locale", baseName + ", " + locale),
+                        baseName + "_" + locale);
+        report(exception);
+    }
+
+    private static String errorMessage(String type, String resourcePath) {
         /* Can't use multi-line strings as they pull in format and bloat "Hello, World!" */
-        return "The program tried to access the resource at path " +
+        return "The program tried to access the " + type +
                         System.lineSeparator() +
                         System.lineSeparator() +
                         ERROR_EMPHASIS_INDENT + resourcePath +

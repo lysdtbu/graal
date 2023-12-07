@@ -578,10 +578,6 @@ public class LocalizationFeature implements InternalFeature {
 
     @Platforms(Platform.HOSTED_ONLY.class)
     public void prepareBundle(String baseName, Collection<Locale> wantedLocales) {
-        if (baseName.isEmpty()) {
-            return;
-        }
-
         prepareBundleInternal(baseName, wantedLocales);
 
         String alternativeBundleName = null;
@@ -599,6 +595,7 @@ public class LocalizationFeature implements InternalFeature {
     private void prepareBundleInternal(String baseName, Collection<Locale> wantedLocales) {
         boolean somethingFound = false;
         for (Locale locale : wantedLocales) {
+            support.registerBundleLookup(baseName, locale);
             List<ResourceBundle> resourceBundle;
             try {
                 resourceBundle = ImageSingletons.lookup(ClassLoaderSupport.class).getResourceBundle(baseName, locale);
