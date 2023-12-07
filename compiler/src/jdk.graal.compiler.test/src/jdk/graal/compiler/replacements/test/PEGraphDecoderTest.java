@@ -38,6 +38,7 @@ import jdk.graal.compiler.core.common.type.StampFactory;
 import jdk.graal.compiler.core.test.GraalCompilerTest;
 import jdk.graal.compiler.debug.DebugContext;
 import jdk.graal.compiler.debug.DebugOptions;
+import jdk.graal.compiler.java.DefaultGraphBuilderPhase;
 import jdk.graal.compiler.java.GraphBuilderPhase;
 import jdk.graal.compiler.nodes.AbstractBeginNode;
 import jdk.graal.compiler.nodes.CompanionObjectEncoder;
@@ -232,7 +233,7 @@ public class PEGraphDecoderTest extends GraalCompilerTest {
             graphBuilderConfig = editGraphBuilderConfiguration(graphBuilderConfig);
             registerPlugins(graphBuilderConfig.getPlugins().getInvocationPlugins());
             targetGraph = new StructuredGraph.Builder(debug.getOptions(), debug, AllowAssumptions.YES).method(testMethod).build();
-            GraphBuilderPhase.Instance instance = new GraphBuilderPhase.Instance(getProviders(), graphBuilderConfig, OptimisticOptimizations.NONE, null);
+            GraphBuilderPhase.Instance instance = new DefaultGraphBuilderPhase.Instance(getProviders(), graphBuilderConfig, OptimisticOptimizations.NONE, null);
             CachingPEGraphDecoder decoder = new CachingPEGraphDecoder(getTarget().arch, targetGraph, getProviders(), graphBuilderConfig,
                             null, null, new InlineInvokePlugin[]{new InlineAll()}, null, null, null, null, null, graphCache, () -> null, instance, false, false, true);
 

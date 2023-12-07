@@ -419,9 +419,7 @@ public abstract class PartialEvaluator {
                         allowAssumptionsDuringParsing, false, true);
     }
 
-    protected GraphBuilderPhase.Instance createGraphBuilderPhaseInstance(CoreProviders providers, GraphBuilderConfiguration graphBuilderConfig, OptimisticOptimizations optimisticOpts) {
-        return new GraphBuilderPhase.Instance(providers, graphBuilderConfig, optimisticOpts, null);
-    }
+    protected abstract GraphBuilderPhase.Instance createGraphBuilderPhaseInstance(CoreProviders providers, GraphBuilderConfiguration graphBuilderConfig, OptimisticOptimizations optimisticOpts);
 
     @SuppressWarnings("try")
     public void doGraphPE(TruffleTierContext context, InlineInvokePlugin inlineInvokePlugin, EconomicMap<ResolvedJavaMethod, EncodedGraph> graphCache) {

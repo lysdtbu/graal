@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023, 2023, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2023, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -22,23 +22,31 @@
  * or visit www.oracle.com if you need additional information or have any
  * questions.
  */
-package com.oracle.svm.core.graal.aarch64;
+package jdk.graal.compiler.hotspot;
 
-import jdk.graal.compiler.core.aarch64.AArch64SuitesCreator;
-import jdk.graal.compiler.java.DefaultGraphBuilderPhase;
+import jdk.graal.compiler.debug.DebugContext;
 import jdk.graal.compiler.java.GraphBuilderPhase;
+import jdk.graal.compiler.java.StableMethodNameFormatter;
 import jdk.graal.compiler.nodes.graphbuilderconf.GraphBuilderConfiguration;
-import jdk.graal.compiler.phases.tiers.CompilerConfiguration;
+import jdk.graal.compiler.nodes.graphbuilderconf.InvocationPlugins;
+import jdk.graal.compiler.phases.util.Providers;
 
-public class AArch64SubstrateSuitesCreator extends AArch64SuitesCreator {
+/**
+ * A simple wrapper that creates the right subclass of {@link GraphBuilderPhase}.
+ */
+public class HotSpotStableMethodNameFormatter extends StableMethodNameFormatter {
 
-    public AArch64SubstrateSuitesCreator(CompilerConfiguration compilerConfiguration) {
-        super(compilerConfiguration);
+    public HotSpotStableMethodNameFormatter(Providers providers, DebugContext debug) {
+        this(providers, debug, false);
     }
 
-    @Override
-    protected GraphBuilderPhase createGraphBuilderPhase(GraphBuilderConfiguration graphBuilderConfiguration) {
-        return new DefaultGraphBuilderPhase(graphBuilderConfiguration);
+    public HotSpotStableMethodNameFormatter(Providers providers, DebugContext debug, boolean considerMH) {
+        super(providers, debug, getGraphBuilderPhase(), considerMH);
     }
 
+    static GraphBuilderPhase getGraphBuilderPhase() {
+        GraphBuilderConfiguration.Plugins plugins = new GraphBuilderConfiguration.Plugins(new InvocationPlugins());
+        GraphBuilderConfiguration builderConfiguration = GraphBuilderConfiguration.getDefault(plugins).withEagerResolving(true);
+        return new HotSpotGraphBuilderPhase(builderConfiguration);
+    }
 }
